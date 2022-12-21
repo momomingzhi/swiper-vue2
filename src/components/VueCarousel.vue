@@ -6,8 +6,8 @@
         :key="`${item.width}-${index}`"
         :style="{
           width: `${item.width}px`,
-          border: '1px solid',
-          overflow: 'auto',
+          border: '1px solid #fff',
+          background: '#00a52a',
         }"
       >
         <h1>{{ item.content }}</h1>
@@ -19,7 +19,6 @@
 <script>
 import VueSlickCarousel from "vue-slick-carousel";
 import "vue-slick-carousel/dist/vue-slick-carousel.css";
-// optional style for arrows & dots
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
 
 export default {
@@ -34,14 +33,15 @@ export default {
       (acc, cur) => (acc += Number(cur.width)),
       0
     );
-    this.slidesToShow = Math.round(this.clientWidth / computedLen);
-    console.log("slidesToShow:", computedLen);
+    this.slidesToShow = Math.ceil(computedLen / this.clientWidth);
+    console.log(
+      "slidesToShow:",
+      this.clientWidth,
+      computedLen,
+      this.slidesToShow
+    );
   },
   computed: {
-    getClientWidth() {
-      console.log("ㅎㅇㅎㅇ:", this?.$refs?.sliders);
-      return this?.$refs?.sliders?.$el?.clientWidth;
-    },
     slidesWidth() {
       const renderListLen = Math.floor(this.clientWidth / this.list.length);
       const { min, max } = { min: renderListLen, max: renderListLen + 50 };
@@ -57,33 +57,34 @@ export default {
         dots: true,
         arrows: true,
         infinite: false,
-        slidesToShow: this.slidesWidth.length,
-        slidesToScroll: 2,
+        // slidesToShow: this.slidesWidth.length,
+        // slidesToScroll: this.slidesWidth.length - this.slidesToShow,
         variableWidth: true,
         resize: true,
         responsive: [
           {
             breakpoint: 400,
             settings: {
-              slidesToShow: this.slidesWidth.length - 2,
+              slidesToShow: this.slidesWidth.length - this.slidesToShow,
             },
           },
           {
             breakpoint: 500,
             settings: {
-              slidesToShow: this.slidesWidth.length,
+              slidesToShow: this.slidesWidth.length - this.slidesToShow,
+              // slidesToScroll: 4,
             },
           },
           {
             breakpoint: 600,
             settings: {
-              slidesToShow: this.slidesWidth.length,
+              slidesToShow: this.slidesWidth.length - this.slidesToShow,
             },
           },
           {
             breakpoint: 800,
             settings: {
-              slidesToShow: this.slidesWidth.length,
+              slidesToShow: this.slidesWidth.length - this.slidesToShow,
             },
           },
           {
@@ -115,16 +116,13 @@ export default {
 };
 </script> 
 <style>
-* {
-  background: mediumpurple;
+button.slick-prev:before,
+button.slick-next:before {
+  background-color: #ccc !important;
 }
 .listCard {
-  border: 1px solid;
-  /* width: 90%; */
+  width: 90%;
   margin: 0 auto 2rem auto;
-}
-
-.slick-dots {
-  bottom: -30px !important;
+  background: #fe987b !important;
 }
 </style>
